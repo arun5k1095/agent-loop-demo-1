@@ -26,13 +26,17 @@ def ask(messages: list[dict], tools: list[dict]) -> ChatCompletionMessage:
     would have to be stitched back together, which would hide the lesson.
     """
 
+    secrets = load_secrets()
+    api_key = secrets["GROQ_API_KEY"]
     tls_context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-    with Groq(
-        api_key=load_secrets()["GROQ_API_KEY"],
+    client = Groq(
+        api_key=api_key,
         timeout=60.0,
         max_retries=2,
         http_client=httpx.Client(verify=tls_context),
-    ) as client:
+    )
+
+    try:
         response = client.chat.completions.create(
             model=MODEL,
             messages=messages,
@@ -40,4 +44,7 @@ def ask(messages: list[dict], tools: list[dict]) -> ChatCompletionMessage:
             tool_choice="auto",
             max_completion_tokens=2000,
         )
-        return response.choices[0].message
+        reply = response.choices[0].message
+        return reply
+    finally:
+        client.close()

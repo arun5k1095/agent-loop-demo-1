@@ -16,7 +16,7 @@ class AskTests(unittest.TestCase):
         with patch.object(llm, "Groq") as groq_class, patch.object(
             llm.httpx, "Client"
         ) as http_client:
-            client = groq_class.return_value.__enter__.return_value
+            client = groq_class.return_value
             expected = client.chat.completions.create.return_value.choices[0].message
 
             self.assertIs(llm.ask(messages, []), expected)
@@ -34,17 +34,16 @@ class AskTests(unittest.TestCase):
                 tool_choice="auto",
                 max_completion_tokens=2000,
             )
-            groq_class.return_value.__exit__.assert_called_once()
+            client.close.assert_called_once()
 
     def test_ask_closes_client_when_request_fails(self):
         with patch.object(llm, "Groq") as groq_class, patch.object(
             llm.httpx, "Client"
         ):
-            groq_class.return_value.__exit__.return_value = False
-            client = groq_class.return_value.__enter__.return_value
+            client = groq_class.return_value
             client.chat.completions.create.side_effect = RuntimeError("unavailable")
 
             with self.assertRaisesRegex(RuntimeError, "unavailable"):
                 llm.ask([], [])
 
-            groq_class.return_value.__exit__.assert_called_once()
+            client.close.assert_called_once()
