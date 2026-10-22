@@ -1,0 +1,62 @@
+body {
+  font-family: system-ui, sans-serif;
+  color: #222;
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.hint {
+  color: #666;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+label {
+  width: 100%;
+  font-weight: 600;
+}
+
+input {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+#steps {
+  list-style: none;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9rem;
+  background: #f4f4f4;
+  border-radius: 4px;
+  padding: 1rem;
+  min-height: 2rem;
+  overflow-wrap: anywhere; /* long tool-result JSON wraps instead of overflowing */
+}
+
+#steps li + li {
+  margin-top: 0.5rem;
+}
+
+#answer {
+  font-size: 1.1rem;
+  border-left: 4px solid #2a7;
+  padding-left: 0.75rem;
+  min-height: 1.5rem;
+}
